@@ -1,68 +1,47 @@
 package com.echo.mall.config;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
-import springfox.documentation.spring.web.plugins.WebFluxRequestHandlerProvider;
-import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Swagger API文档相关配置
  */
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig extends BaseSwaggerConfig {
+public class SwaggerConfig {
 
-    @Override
-    public SwaggerProperties swaggerProperties() {
-        return SwaggerProperties.builder()
-                .apiBasePackage("com.echo.mall.modules")
-                .title("mall-tiny项目骨架")
-                .description("mall-tiny项目骨架相关接口文档")
-                .contactName("echo")
-                .version("1.0")
-                .enableSecurity(true)
+    //是否开启swagger，正式环境需要关闭
+//    @Value(value = "${swagger.enabled}")
+//    Boolean swaggerEnabled;
+    @Bean
+    public Docket createRestApi(){
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .select()
+                //为当前包下controller生成API文档	--你的项目基础包名
+                .apis(RequestHandlerSelectors.basePackage("com.echo.mall.modules"))
+                //为有@Api注解的Controller生成API文档
+                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
+                //为有@ApiOperation注解的方法生成API文档
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .paths(PathSelectors.any())
                 .build();
     }
 
-    @Bean
-    public static BeanPostProcessor springfoxHandlerProviderBeanPostProcessor() {
-        return new BeanPostProcessor() {
-
-            @Override
-            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-                if (bean instanceof WebMvcRequestHandlerProvider || bean instanceof WebFluxRequestHandlerProvider) {
-                    customizeSpringfoxHandlerMappings(getHandlerMappings(bean));
-                }
-                return bean;
-            }
-
-            private <T extends RequestMappingInfoHandlerMapping> void customizeSpringfoxHandlerMappings(List<T> mappings) {
-                List<T> copy = mappings.stream()
-                        .filter(mapping -> mapping.getPathMatcher() == null)
-                        .collect(Collectors.toList());
-                mappings.clear();
-                mappings.addAll(copy);
-            }
-
-            @SuppressWarnings("unchecked")
-            private List<RequestMappingInfoHandlerMapping> getHandlerMappings(Object bean) {
-                try {
-                    Field field = ReflectionUtils.findField(bean.getClass(), "handlerMappings");
-                    field.setAccessible(true);
-                    return (List<RequestMappingInfoHandlerMapping>) field.get(bean);
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-        };
+    private ApiInfo apiInfo(){
+        return new ApiInfoBuilder()
+                .title("Echo-Mall")
+                .description("api接口文档")
+                .version("1.0")
+                .build();
     }
 }
