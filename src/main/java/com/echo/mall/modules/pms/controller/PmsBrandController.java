@@ -4,6 +4,7 @@ package com.echo.mall.modules.pms.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import com.echo.mall.modules.pms.model.PmsBrand;
 import com.echo.mall.modules.pms.service.PmsBrandService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/pms/pmsBrand")
+@Api(value="pmsBrandController",tags={"品牌管理接口"})
 public class PmsBrandController {
 
     @Autowired
