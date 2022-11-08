@@ -67,7 +67,7 @@ public class MyBatisPlusGenerator {
      * 初始化数据源配置
      */
     private static DataSourceConfig initDataSourceConfig() {
-        Props props = new Props("/Volumes/Echo/App/ALLBYMYSELF/mall/src/main/resources/config/generator.properties");
+        Props props = new Props("/Volumes/Echo/App/ALLBYMYSELF/mall/echoMall/src/main/resources/config/generator.properties");
         String url = props.getStr("dataSource.url");
         String username = props.getStr("dataSource.username");
         String password = props.getStr("dataSource.password");
@@ -80,7 +80,7 @@ public class MyBatisPlusGenerator {
      * 初始化包配置
      */
     private static PackageConfig initPackageConfig(String projectPath,String moduleName) {
-        Props props = new Props("/Volumes/Echo/App/ALLBYMYSELF/mall/src/main/resources/config/generator.properties");
+        Props props = new Props("/Volumes/Echo/App/ALLBYMYSELF/mall/echoMall/src/main/resources/config/generator.properties");
         return new PackageConfig.Builder()
                 .moduleName(moduleName)
                 .parent(props.getStr("package.base"))
