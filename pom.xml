@@ -31,6 +31,11 @@
     </properties>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security.oauth</groupId>-->
+<!--            <artifactId>spring-security-oauth2</artifactId>-->
+<!--            <version>2.3.4.RELEASE</version>-->
+<!--        </dependency>-->
         <!--SpringBoot通用依赖模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
